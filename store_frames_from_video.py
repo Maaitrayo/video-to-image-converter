@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture('Resources/VID_short.mp4')
+cap = cv2.VideoCapture('video.mp4')
 
 
 if (cap.isOpened()== False): 
