@@ -22,12 +22,14 @@ cap = cv2.VideoCapture('video.mp4')
 if (cap.isOpened()== False): 
   print("Error opening video stream or file")
 i=0;
-
+pad = '0'
+n = 6
 while(cap.isOpened()):
   
   ret, frame = cap.read()
   if ret == True:
-    frame_name = str(i)+".png"
+    frame_name = format(i, pad + str(n))+'.png'
+
     
     cv2.imshow('Frame',frame)    
     cv2.imwrite(frame_name,frame)
