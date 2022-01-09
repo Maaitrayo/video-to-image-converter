@@ -49,7 +49,6 @@ class Extraxtor:
       else: 
         break
     cap.release()
-
     # Closes all the frames
     cv2.destroyAllWindows()
 
