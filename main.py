@@ -1,4 +1,5 @@
-'''MIT License
+'''
+MIT License
 
 Copyright (c) 2021 Maaitrayo Das
 
@@ -10,7 +11,8 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+'''
 
 
 import cv2
@@ -21,10 +23,25 @@ import argparse
 
 class Extraxtor:
   def __init__(self):
+    self.i=0
+    self.dest_Flag_=True
     dirs=os.listdir()
     if "Frames" not in dirs:
       os.mkdir("Frames")
     self.path='Frames/'
+
+  def merge(self,prvLoc):
+    os.system('clear')
+    dest='Frames/'+self.destfol
+    if self.dest_Flag_:
+      os.mkdir(dest)
+      self.dest_Flag_=False
+    files=glob.glob(prvLoc+'*.png')
+    files.sort()
+    for file_ in files:
+      newfile_=file_.replace(self.subfolder,self.destfol)
+      os.rename(file_,newfile_)
+    os.rmdir(prvLoc)
 
   def clean(self):
     files=os.listdir(self.save)
@@ -35,10 +52,14 @@ class Extraxtor:
       popfile=self.save+popfile
       os.remove(popfile)
       count-=1
+    self.i-=33
     print('Cleaned')
+    self.merge(self.save)
+
 
   def analize(self,rawfolder):
     dirs=os.listdir(rawfolder)
+    self.destfol=rawfolder.split('/')[-2]
     dirs.sort()
     for dir_ in dirs:
       if dir_.isnumeric():
@@ -52,9 +73,9 @@ class Extraxtor:
     subpath=list(rawfile.split('/'))
     self.subfolder=subpath[len(subpath)-2]
     self.save=self.path+self.subfolder
-    print('Saving:',self.save)
     os.mkdir(self.save)
     self.save+='/'
+    print('Saving:',self.save)
     self.read(rawfile)
     
   def read(self,rawfile):
@@ -62,7 +83,6 @@ class Extraxtor:
     if (cap.isOpened()== False): 
       print("Error opening video stream or file")
     fps = cap.get(cv2.CAP_PROP_FPS)
-    self.i=0
     pad = '0'
     n = 6
     while(cap.isOpened()):
@@ -75,9 +95,10 @@ class Extraxtor:
           cv2.imshow('Frame',cv2.flip(frame, 1))
         else:
           cv2.imshow('Frame',frame)
+        print(save)
         cv2.imwrite(save,frame)
         
-        self.i=+1
+        self.i+=1
         if cv2.waitKey(25) & 0xFF == ord('q'):
           break
       else: 
