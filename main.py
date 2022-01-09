@@ -39,8 +39,9 @@ class Extraxtor:
     files=glob.glob(prvLoc+'*.png')
     files.sort()
     for file_ in files:
-      newfile_=file_.replace(self.subfolder,self.destfol)
+      newfile_=file_[:-11].replace(self.subfolder,self.destfol)+'/'+file_[9:]
       os.rename(file_,newfile_)
+      print(file_,'->',newfile_)
     os.rmdir(prvLoc)
 
   def clean(self):
@@ -112,5 +113,3 @@ class Extraxtor:
 if __name__ == '__main__':
   extract=Extraxtor()
   extract.analize('/Users/alpha/Downloads/Chunk_10_5/99c94dc769b5d96e_2018-11-16--15-02-13/')
-
-
