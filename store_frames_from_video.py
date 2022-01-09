@@ -14,38 +14,46 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 
 import cv2
+import os
 import numpy as np
 
-cap = cv2.VideoCapture('video.mp4')
-
-
-if (cap.isOpened()== False): 
-  print("Error opening video stream or file")
-i=0;
-pad = '0'
-n = 6
-while(cap.isOpened()):
-  
-  ret, frame = cap.read()
-  if ret == True:
-    frame_name = format(i, pad + str(n))+'.png'
-
-    
-    cv2.imshow('Frame',frame)    
-    cv2.imwrite(frame_name,frame)
-    print(frame_name)
+class Extraxtor:
+  def __init__(self):
+    os.mkdir("Frames")
+    self.path='Frames/'
+  def analize(self,rawfile):  
+    cap = cv2.VideoCapture(rawfile)
+    if (cap.isOpened()== False): 
+      print("Error opening video stream or file")
+    i=0
+    pad = '0'
+    n = 6
+    while(cap.isOpened()):
       
-    i=i+1
-    
-    if cv2.waitKey(25) & 0xFF == ord('q'):
-      break
+      ret, frame = cap.read()
+      if ret == True:
+        frame_name = format(i, pad + str(n))+'.png'
+        path+=frame_name
 
-  
-  else: 
-    break
+        
+        cv2.imshow('Frame',frame)    
+        cv2.imwrite(path,frame)
+        print(frame_name)
+          
+        i=i+1
+        
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+          break
 
+      
+      else: 
+        break
+    cap.release()
 
-cap.release()
+    # Closes all the frames
+    cv2.destroyAllWindows()
 
-# Closes all the frames
-cv2.destroyAllWindows()
+if __name__ == '__main__':
+  extract=Extraxtor()
+  extract.analize('Video.mp4')
+
