@@ -6,9 +6,16 @@ Clone it in your local machine
 ```
 git clone _repolink_
 ```
-* Run for program help
+* Run for program for intructions
 ```
 python3 main.py -h
+```
+**or**
+```
+chmod +x main.py
+```
+```
+./main.py -h
 ```
 
 ## Dependencies
