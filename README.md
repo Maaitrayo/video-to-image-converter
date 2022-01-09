@@ -1,3 +1,19 @@
-# video-to-image-converter
-# convert your video to a series of images
-## Just clone the repo in an empty folder and in line no. 4 change the path of the video file to the path of your video file
+# Video frames extractor
+---
+Convert your video to a series of images.
+
+Clone it in your local machine
+```
+git clone _repolink_
+```
+* Run for program help
+```
+python3 main.py -h
+```
+
+## Dependencies
+---
+
+```
+pip3 install requirements.txt
+```
