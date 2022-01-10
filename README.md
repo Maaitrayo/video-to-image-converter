@@ -1,21 +1,21 @@
 # Video frames extractor
 ---
+ _**Version 2.1 will release soon**_
+
 Convert your video to a series of images.
 
 Clone it in your local machine
 ```
 git clone _repolink_
 ```
-* Run for program for intructions
+**Run**
+```
+python3 main.py -f [parent folder path]
+```
+**Run for program for intructions**
+
 ```
 python3 main.py -h
-```
-**or**
-```
-chmod +x main.py
-```
-```
-./main.py -h
 ```
 
 ## Dependencies
