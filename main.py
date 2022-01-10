@@ -15,13 +15,38 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 '''
 
 import argparse 
+import os
 from Editor import extractor as ex
 
 if __name__ == "__main__":
   parser=argparse.ArgumentParser(description="Extraxt and process frames from given dataset for neural network training")
   parser.add_argument('-f','--folder',type=str,help='Parent folder path of the dataset')
+  parser.add_argument('-m','--multifolder',type=bool,default=False,help='Manulay input multiple parent folder paths of the dataset')
+  parser.add_argument('-a','--autodetect',type=bool,default=False,help='Auto detect multiple parent folder paths of the dataset')
   parser.add_argument('-l','--live',type=str,help='Capture live video input from device camera')
   args=parser.parse_args()
   ex_ob = ex.Extraxtor()
-  ex_ob.analize(args.folder)
+  if args.multifolder:
+    folders=args.folder.split(' ')
+    for folder in folders:
+      print(folder)
+  elif args.autodetect:
+    folders=os.listdir(args.folder)
+    while(1):
+      inx=0
+      os.system('clear')
+      print('---:FOLDERS FOUND:---\nPress: index to remove selection\nPress: -1 to continue\n\n')
+      for folder in folders:
+        print ('%d.'%(inx+1),folder)
+        inx+=1
+      # choice=input(':')
+      pos=int(input(':'))
+      if pos == -1:
+        break
+      folders.pop(pos-1)
+    for folder in folders:
+      print('Processing:',args.folder+folder)
+      ex_ob.analize(args.folder+folder+'/')
 
+  else:
+    ex_ob.analize(args.folder+'/')

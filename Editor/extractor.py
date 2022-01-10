@@ -1,9 +1,11 @@
 import cv2
 import os
 import numpy as np
+import time
 import glob
 import argparse 
-
+import random
+import logging
 class Extraxtor:
   """
   Input: 
@@ -18,9 +20,20 @@ class Extraxtor:
     self.i=0
     self.dest_Flag_=True
     dirs=os.listdir()
-    if "Frames" not in dirs:
-      os.mkdir("Frames")
-    self.path='Frames/'
+    # name='Frames'
+    while(1):
+      prefix=random.randrange(0, 100, 3)
+      name='Frames' + str(prefix)
+      if name not in dirs:
+        os.mkdir(name)
+        break
+    self.path=name+'/'
+    logfile=name+'.log'
+    logging.basicConfig(filename=logfile,
+                        format='%(asctime)s %(message)s',
+                        filemode='w')
+    self.logger = logging.getLogger()
+    self.logger.setLevel(logging.DEBUG)
 
   def merge(self,prvLoc):
     """
@@ -33,7 +46,7 @@ class Extraxtor:
             parent folder conating all the frames
     """
     os.system('clear')
-    dest='Frames/'+self.destfol
+    dest=self.path+self.destfol
 
     if self.dest_Flag_:
       os.mkdir(dest)
@@ -43,9 +56,14 @@ class Extraxtor:
     files.sort()
 
     for file_ in files:
-      newfile_=file_[:-11].replace(self.subfolder,self.destfol)+'/'+file_[9:]
+      folders=file_.split('/')
+      folders[1]=self.destfol
+      sign='/'
+      newfile_=sign.join(folders)
+      # newfile_=file_[:-11].replace(self.subfolder,self.destfol)+'/'+file_[11:]
+      printl='Moving: ',file_,'->',newfile_
+      self.logger.info(printl)
       os.rename(file_,newfile_)
-      print(file_,'->',newfile_)
     os.rmdir(prvLoc)
 
   def clean(self):
@@ -66,33 +84,50 @@ class Extraxtor:
       os.remove(popfile)
       count-=1
     self.i-=33
-    print('Cleaned')
+    printl='Temps Cleaned...'
+    self.logger.info(printl)
     self.merge(self.save)
 
 
   def analize(self,rawfolder):
     """
     """
+    start_time = time.perf_counter ()
     dirs=os.listdir(rawfolder)
     self.destfol=rawfolder.split('/')[-2]
-    dirs.sort()
+    
+    printl='To process:',dirs
+    self.logger.info(printl)
+    dirs=[n for n in dirs if n.isnumeric()]
+    # dirs.sort()       #ERROR while sorting
+    dirs.sort(key = int)
     for dir_ in dirs:
       if dir_.isnumeric():
         filepath=rawfolder+dir_
         rawfile=glob.glob(filepath+'/*.hevc')
         self.branch(rawfile[0])
-
+    
+    printl="Process SUCESSFULL ! Completed %d frames"%(self.i)
+    self.logger.info(printl)
+    end_time = time.perf_counter ()
+    
+    printl='\n\nexecution time',end_time - start_time, "seconds"
+    self.logger.info(printl)
 
   def branch(self,rawfile):
     """
     """
-    print('Reading:',rawfile)
+    
+    printl='Reading from:',rawfile
+    self.logger.info(printl)
     subpath=list(rawfile.split('/'))
     self.subfolder=subpath[len(subpath)-2]
     self.save=self.path+self.subfolder
     os.mkdir(self.save)
     self.save+='/'
-    print('Saving:',self.save)
+    
+    printl='Saving to:',self.save
+    self.logger.info(printl)
     self.read(rawfile)
     
   def read(self,rawfile):
@@ -100,7 +135,9 @@ class Extraxtor:
     """
     cap = cv2.VideoCapture(rawfile)
     if (cap.isOpened()== False): 
-      print("Error opening video stream or file")
+      
+      printl="Error opening video stream or file"
+      self.logger.info(printl)
     fps = cap.get(cv2.CAP_PROP_FPS)
     pad = '0'
     n = 6
@@ -110,16 +147,17 @@ class Extraxtor:
         frame_name = format(self.i, pad + str(n))+'.png'
         save=self.save+frame_name
 
-        if rawfile==0:
-          cv2.imshow('Frame',cv2.flip(frame, 1))
-        else:
-          cv2.imshow('Frame',frame)
-        print(save)
-        cv2.imwrite(save,frame)
+        # if rawfile==0:
+        #   cv2.imshow('Frame',cv2.flip(frame, 1))
+        # else:
+        #   # cv2.imshow('Frame',frame)
         
+        printl=save,'saving SUCESSFULL !'
+        self.logger.info(printl)
+        cv2.imwrite(save,frame)
         self.i+=1
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-          break
+        # if cv2.waitKey(25) & 0xFF == ord('q'):
+          # break
       else: 
         break
 
